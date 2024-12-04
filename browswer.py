@@ -90,6 +90,5 @@ if st.button("Realizar Búsqueda"):
         st.warning("No se encontraron productos.")
 
         
-    else:
-        st.warning("No se encontraron productos.")
+  
 
