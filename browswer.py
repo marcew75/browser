@@ -7,6 +7,8 @@ import pandas as pd
 from io import BytesIO
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.remote.remote_connection import RemoteConnection
+
 
 # Configuración de BrowserStack
 BROWSERSTACK_USERNAME = "marcelogil_KjOGfW"
@@ -25,6 +27,17 @@ def configurar_driver():
         "seleniumVersion": "4.0.0"
     })
 
+    
+
+
+
+    client_config = RemoteConnection.ClientConfig()
+    client_config.username = BROWSERSTACK_USERNAME
+    client_config.password = BROWSERSTACK_ACCESS_KEY
+
+
+
+    
     driver = webdriver.Remote(
         command_executor=BROWSERSTACK_URL,
         options=chrome_options
