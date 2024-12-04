@@ -7,12 +7,10 @@ import pandas as pd
 from io import BytesIO
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.action_chains import ActionChains
-from selenium.webdriver.remote.remote_connection import RemoteConnection
 
-
-# Configuración de BrowserStack
-BROWSERSTACK_USERNAME = "marcelogil_KjOGfW"
-BROWSERSTACK_ACCESS_KEY = "bs2t2TdAXJqNNNMqtnmg"
+# Cargar secretos desde el archivo secrets.toml
+BROWSERSTACK_USERNAME = st.secrets["BROWSERSTACK_USERNAME"]
+BROWSERSTACK_ACCESS_KEY = st.secrets["BROWSERSTACK_ACCESS_KEY"]
 BROWSERSTACK_URL = f"https://{BROWSERSTACK_USERNAME}:{BROWSERSTACK_ACCESS_KEY}@hub-cloud.browserstack.com/wd/hub"
 
 def configurar_driver():
@@ -27,17 +25,6 @@ def configurar_driver():
         "seleniumVersion": "4.0.0"
     })
 
-    
-
-
-
-    client_config = RemoteConnection.ClientConfig()
-    client_config.username = BROWSERSTACK_USERNAME
-    client_config.password = BROWSERSTACK_ACCESS_KEY
-
-
-
-    
     driver = webdriver.Remote(
         command_executor=BROWSERSTACK_URL,
         options=chrome_options
@@ -98,6 +85,10 @@ if st.button("Realizar Búsqueda"):
             data=archivo_excel,
             file_name=f"resultados_{marca}_{categoria}.xlsx",
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        )
+    else:
+        st.warning("No se encontraron productos.")
+
         )
     else:
         st.warning("No se encontraron productos.")
