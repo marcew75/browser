@@ -89,7 +89,7 @@ if st.button("Realizar Búsqueda"):
     else:
         st.warning("No se encontraron productos.")
 
-        )
+        
     else:
         st.warning("No se encontraron productos.")
 
