@@ -6,17 +6,14 @@ from selenium.webdriver.support import expected_conditions as EC
 import pandas as pd
 from io import BytesIO
 from selenium.webdriver.chrome.options import Options
-
+from selenium.webdriver.common.action_chains import ActionChains
 
 # Configuración de BrowserStack
 BROWSERSTACK_USERNAME = "marcelogil_KjOGfW"
 BROWSERSTACK_ACCESS_KEY = "bs2t2TdAXJqNNNMqtnmg"
 BROWSERSTACK_URL = f"https://{BROWSERSTACK_USERNAME}:{BROWSERSTACK_ACCESS_KEY}@hub-cloud.browserstack.com/wd/hub"
 
-
-
-
-def realizar_scraping(marca, categoria):
+def configurar_driver():
     chrome_options = Options()
     chrome_options.set_capability('browserName', 'chrome')
     chrome_options.set_capability('browserVersion', 'latest')
@@ -32,21 +29,25 @@ def realizar_scraping(marca, categoria):
         command_executor=BROWSERSTACK_URL,
         options=chrome_options
     )
+    return driver
 
-    url = "https://pe.wiautomation.com/"
+def realizar_scraping(marca, categoria):
+    # Construir la URL directamente
+    url = f"https://pe.wiautomation.com/{marca}/{categoria}"
+    driver = configurar_driver()
     driver.get(url)
-    # Resto de tu código para realizar scraping
    
-
-
     productos = []
     try:
         wait = WebDriverWait(driver, 10)
-        # Aquí adaptas tu scraping, por ejemplo:
-        wait.until(EC.element_to_be_clickable((By.LINK_TEXT, marca))).click()
-        wait.until(EC.element_to_be_clickable((By.XPATH, f"//h3[text()='{categoria}']"))).click()
+        # Esperar a que los contenedores estén presentes
+        contenedores = wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, "div.main_elem_products_section")))
         
-        contenedores = driver.find_elements(By.CSS_SELECTOR, "div.item_content")
+        # Scroll para cargar todos los elementos
+        for contenedor in contenedores:
+            ActionChains(driver).move_to_element(contenedor).perform()
+        
+        # Recorrer los contenedores y extraer la información
         for contenedor in contenedores:
             descripcion = contenedor.find_element(By.CSS_SELECTOR, "span.name").text
             precio = contenedor.find_element(By.CSS_SELECTOR, "div.price").text
@@ -87,3 +88,4 @@ if st.button("Realizar Búsqueda"):
         )
     else:
         st.warning("No se encontraron productos.")
+
