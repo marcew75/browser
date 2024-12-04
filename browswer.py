@@ -5,29 +5,39 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import pandas as pd
 from io import BytesIO
+from selenium.webdriver.chrome.options import Options
+
 
 # Configuración de BrowserStack
 BROWSERSTACK_USERNAME = "marcelogil_KjOGfW"
 BROWSERSTACK_ACCESS_KEY = "bs2t2TdAXJqNNNMqtnmg"
 BROWSERSTACK_URL = f"https://{BROWSERSTACK_USERNAME}:{BROWSERSTACK_ACCESS_KEY}@hub-cloud.browserstack.com/wd/hub"
 
-def realizar_scraping(marca, categoria):
-    capabilities = {
-        "browserName": "Chrome",
-        "browserVersion": "latest",
-        "bstack:options": {
-            "os": "Windows",
-            "osVersion": "10",
-            "seleniumVersion": "4.1.2",
-            "buildName": "Scraper Streamlit",
-            "sessionName": f"Scraping {marca} {categoria}",
-        }
-    }
 
-    # Inicia el navegador remoto en BrowserStack
-    driver = webdriver.Remote(command_executor=BROWSERSTACK_URL, desired_capabilities=capabilities)
+
+
+def realizar_scraping(marca, categoria):
+    chrome_options = Options()
+    chrome_options.set_capability('browserName', 'chrome')
+    chrome_options.set_capability('browserVersion', 'latest')
+    chrome_options.set_capability('bstack:options', {
+        "os": "Windows",
+        "osVersion": "10",
+        "sessionName": "Búsqueda",
+        "local": "false",
+        "seleniumVersion": "4.0.0"
+    })
+
+    driver = webdriver.Remote(
+        command_executor=BROWSERSTACK_URL,
+        options=chrome_options
+    )
+
     url = "https://pe.wiautomation.com/"
     driver.get(url)
+    # Resto de tu código para realizar scraping
+   
+
 
     productos = []
     try:
